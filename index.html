@@ -26,37 +26,6 @@
             margin: 40px 20px;
             color: #ff4444;
             max-width: 800px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            animation: sparkle 2s infinite;
-            position: relative;
-        }
-
-        .main-text::before {
-            content: '🎄';
-            position: absolute;
-            left: -40px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .main-text::after {
-            content: '🎄';
-            position: absolute;
-            right: -40px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .image-placeholder {
-            width: 400px;
-            height: 320px;
-            background-color: rgba(255, 255, 255, 0.1);
-            margin: 30px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .hint-title {
@@ -120,23 +89,11 @@
             }
         }
 
-        @keyframes sparkle {
-            0% {
-                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            }
-            50% {
-                text-shadow: 2px 2px 4px rgba(255, 215, 0, 0.5);
-            }
-            100% {
-                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            }
-        }
-
         img {
             border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            max-width: 100%;
+            max-width: 200px;  /* Half of previous 400px */
             height: auto;
+            background: transparent;  /* Ensures transparency */
         }
     </style>
 </head>
@@ -146,7 +103,7 @@
         YOUR PRESENT HAS BEEN HIDDEN BY THE NAUGHTY ELF OF CHEVIOT STREET!!
     </div>
 
-    <img src="PXL_20241225_013134340.jpg" alt="Treasure hunt image" />
+    <img src="/api/placeholder/200/160" alt="Treasure hunt image" />
 
     <div class="hint-title">FIRST HINT</div>
     
