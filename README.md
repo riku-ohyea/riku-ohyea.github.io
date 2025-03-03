@@ -1,1 +1,1 @@
-Currently using this repo to host sites for litle puzzles I make for friends/family
+Currently using this repo to host sites for little puzzles I make for friends/family
