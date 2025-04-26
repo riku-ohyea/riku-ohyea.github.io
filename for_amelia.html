@@ -45,6 +45,7 @@
             border-radius: 10px 10px 0 0;
             margin: 100px auto 0;
             position: relative;
+            z-index: 20; /* Cake in front of candles */
         }
         
         .cake-base {
@@ -55,6 +56,7 @@
             bottom: -30px;
             left: -20px;
             border-radius: 0 0 20px 20px;
+            z-index: 20; /* Base in front of candles */
         }
         
         .cake-top {
@@ -64,6 +66,7 @@
             background-color: #ffb8de;
             top: 0;
             border-radius: 10px 10px 0 0;
+            z-index: 20; /* Top in front of candles */
         }
         
         .candle {
@@ -72,7 +75,7 @@
             height: 40px;
             background-color: white;
             cursor: pointer;
-            z-index: 10;
+            z-index: 10; /* Behind cake */
         }
         
         .flame {
@@ -85,6 +88,7 @@
             left: -2px;
             filter: blur(1px);
             animation: flicker 0.5s infinite alternate;
+            z-index: 30; /* Flame in front of everything */
         }
         
         @keyframes flicker {
@@ -198,16 +202,22 @@
         // Create candles and add to cake
         const cake = document.querySelector('.cake');
         
+        // Randomize candle positions but still keep original order for checking
+        const shuffledPositions = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
+        
         for (let i = 0; i < 4; i++) {
             const candle = document.createElement('div');
             candle.className = 'candle';
             
             // Position candles evenly across the cake
-            const topPosition = -40;
-            const leftPosition = 40 + i * 40;
+            const topPosition = -35; // Start higher up on the cake
+            
+            // Center candles on the cake
+            const position = shuffledPositions[i];
+            const leftPosition = 40 + position * 40;
             
             // Vary heights slightly
-            const height = 35 + Math.random() * 10;
+            const height = 35 + Math.random() * 5;
             
             candle.style.top = `${topPosition}px`;
             candle.style.left = `${leftPosition}px`;
@@ -314,7 +324,7 @@
             document.querySelector('.cake-top').style.backgroundColor = '#004721';
             document.querySelector('.cake-base').style.backgroundColor = '#26599f';
             
-            // Hide messages and restore colors after 3 milliseconds
+            // Hide messages and restore colors after half a second
             setTimeout(function() {
                 hiddenMessages.style.opacity = '0';
                 document.body.style.backgroundColor = 'black';
@@ -322,8 +332,8 @@
                 document.querySelector('.cake').style.backgroundColor = '#f5d6c6';
                 document.querySelector('.cake-top').style.backgroundColor = '#ffb8de';
                 document.querySelector('.cake-base').style.backgroundColor = '#d9a066';
-            }, 50); // 3 milliseconds as requested
-        }, 15000); // Every 30 seconds
+            }, 500); // 500 milliseconds (half a second)
+        }, 15000); // Every 15 seconds
     </script>
 </body>
 </html>
