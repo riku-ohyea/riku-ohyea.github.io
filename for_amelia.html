@@ -39,8 +39,8 @@
         
         .cake {
             position: relative;
-            width: 200px;
-            height: 140px;
+            width: 100px;
+            height: 70px;
             background-color: #f5d6c6;
             border-radius: 10px 10px 0 0;
             margin: 100px auto 0;
@@ -48,18 +48,18 @@
         
         .cake-base {
             position: absolute;
-            width: 240px;
-            height: 30px;
+            width: 120px;
+            height: 15px;
             background-color: #d9a066;
-            bottom: -30px;
-            left: -20px;
+            bottom: -15px;
+            left: -10px;
             border-radius: 0 0 20px 20px;
         }
         
         .cake-top {
             position: absolute;
             width: 100%;
-            height: 30px;
+            height: 15px;
             background-color: #ffb8de;
             top: 0;
             border-radius: 10px 10px 0 0;
@@ -67,21 +67,22 @@
         
         .candle {
             position: absolute;
-            width: 10px;
-            height: 40px;
+            width: 5px;
+            height: 20px;
+            background-color: white;
             cursor: pointer;
             z-index: 1;
-            bottom: 140px;
+            bottom: 70px;
         }
         
         .flame {
             position: absolute;
-            width: 14px;
-            height: 20px;
+            width: 7px;
+            height: 10px;
             background: linear-gradient(to bottom, #ff9d00, #ffeb3b);
             border-radius: 50% 50% 20% 20%;
-            top: -18px;
-            left: -2px;
+            top: -9px;
+            left: -1px;
             filter: blur(1px);
             animation: flicker 0.5s infinite alternate;
         }
@@ -100,6 +101,7 @@
             opacity: 0;
             pointer-events: none;
             font-family: 'Creepster', cursive;
+            font-size: 36px;
             color: red;
             z-index: 5;
         }
@@ -117,25 +119,28 @@
         
         @media (max-width: 600px) {
             .cake {
-                width: 160px;
-                height: 120px;
+                width: 80px;
+                height: 56px;
             }
             
             .cake-base {
-                width: 200px;
-                left: -20px;
+                width: 96px;
+                height: 12px;
+                left: -8px;
+                bottom: -12px;
             }
             
             .candle {
-                width: 8px;
-                height: 35px;
+                width: 4px;
+                height: 16px;
+                bottom: 56px;
             }
             
             .flame {
-                width: 12px;
-                height: 16px;
-                top: -16px;
-                left: -2px;
+                width: 6px;
+                height: 8px;
+                top: -7px;
+                left: -1px;
             }
             
             #birthday-message {
@@ -182,15 +187,15 @@
     </div>
     
     <script>
-        // Candle colors
+        // Define candle colors in the correct order
         const candleColors = [
-            { color: "#FF0000", name: "red" },    // Red
-            { color: "#0000FF", name: "blue" },   // Blue
-            { color: "#00FF00", name: "green" },  // Green
-            { color: "#FFFF00", name: "yellow" }  // Yellow
+            "#FF0000", // Red
+            "#0000FF", // Blue
+            "#00FF00", // Green
+            "#FFFF00"  // Yellow
         ];
         
-        // Shuffle the candle colors for random order
+        // Shuffle the candle colors for random order display
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -199,19 +204,10 @@
             return array;
         }
         
-        // Shuffle the candles for display
-        const displayCandles = shuffleArray([...candleColors]);
-        
-        // Define the correct order to click
-        const correctOrder = [
-            "red",    // Red first
-            "blue",   // Blue second
-            "green",  // Green third
-            "yellow"  // Yellow fourth
-        ];
+        const shuffledColors = shuffleArray([...candleColors]);
         
         // Track clicked candles and their order
-        let clickedOrder = [];
+        let clickedCandles = [];
         
         // Create candles and add to cake
         const cake = document.querySelector('.cake');
@@ -221,11 +217,12 @@
             candle.className = 'candle';
             
             // Position candles evenly across the cake, centered
-            const leftPosition = 60 + i * 25;
+            // Calculate position as a percentage of cake width instead of fixed pixels
+            const leftPosition = 25 + i * 15;
             
             candle.style.left = `${leftPosition}px`;
-            candle.style.backgroundColor = displayCandles[i].color;
-            candle.dataset.colorName = displayCandles[i].name;
+            candle.style.backgroundColor = shuffledColors[i];
+            candle.dataset.color = shuffledColors[i];
             
             const flame = document.createElement('div');
             flame.className = 'flame';
@@ -240,14 +237,14 @@
                 this.querySelector('.flame').remove();
                 
                 // Add to clicked order
-                const candleName = this.dataset.colorName;
-                clickedOrder.push(candleName);
+                const candleColor = this.dataset.color;
+                clickedCandles.push(candleColor);
                 
-                // Check if all candles are clicked
-                if (clickedOrder.length === 4) {
+                // Check if all candles are clicked in correct order
+                if (clickedCandles.length === 4) {
                     let correctSequence = true;
                     for (let j = 0; j < 4; j++) {
-                        if (clickedOrder[j] !== correctOrder[j]) {
+                        if (clickedCandles[j] !== candleColors[j]) {
                             correctSequence = false;
                             break;
                         }
@@ -257,7 +254,7 @@
                         revealBirthdayMessage();
                     } else {
                         // Reset if wrong order
-                        clickedOrder = [];
+                        clickedCandles = [];
                         
                         // Re-add flames to all candles
                         document.querySelectorAll('.candle').forEach(c => {
@@ -309,10 +306,10 @@
             msg.style.top = `${top}%`;
             msg.style.left = `${left}%`;
             msg.style.transform = `rotate(${rotation}deg)`;
-            msg.style.fontSize = `${Math.random() * 20 + 18}px`;
+            msg.style.fontSize = `${Math.random() * 20 + 16}px`;
         });
         
-        // Color flip and hidden messages every 20 seconds
+        // Color flip and hidden messages
         let colorFlipInterval = setInterval(function() {
             const hiddenMessages = document.querySelector('.hidden-messages');
             
