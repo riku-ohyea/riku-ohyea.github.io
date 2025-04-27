@@ -45,7 +45,6 @@
             border-radius: 10px 10px 0 0;
             margin: 100px auto 0;
             position: relative;
-            z-index: 20; /* Cake in front of candles */
         }
         
         .cake-base {
@@ -56,7 +55,6 @@
             bottom: -30px;
             left: -20px;
             border-radius: 0 0 20px 20px;
-            z-index: 20; /* Base in front of candles */
         }
         
         .cake-top {
@@ -66,7 +64,6 @@
             background-color: #ffb8de;
             top: 0;
             border-radius: 10px 10px 0 0;
-            z-index: 20; /* Top in front of candles */
         }
         
         .candle {
@@ -75,7 +72,8 @@
             height: 40px;
             background-color: white;
             cursor: pointer;
-            z-index: 10; /* Behind cake */
+            z-index: 1; /* Lower z-index so candles appear behind cake */
+            bottom: 140px; /* Position relative to bottom for consistent alignment */
         }
         
         .flame {
@@ -88,7 +86,6 @@
             left: -2px;
             filter: blur(1px);
             animation: flicker 0.5s infinite alternate;
-            z-index: 30; /* Flame in front of everything */
         }
         
         @keyframes flicker {
@@ -187,41 +184,31 @@
     </div>
     
     <script>
-        // Define candle colors in required order
+        // Define candle colors - randomized but fixed colors
         const candleColors = [
-            "#FF0000", // Red - must be clicked first
-            "#0000FF", // Blue - must be clicked second
-            "#00FF00", // Green - must be clicked third
-            "#FFFF00"  // Yellow - must be clicked fourth
+            "#00FF00", // Green 
+            "#FF0000", // Red
+            "#FFFF00", // Yellow
+            "#0000FF"  // Blue
         ];
+        
+        // Define the correct order to click (red, blue, green, yellow)
+        const correctOrder = ["#FF0000", "#0000FF", "#00FF00", "#FFFF00"];
         
         // Track clicked candles and their order
         let clickedOrder = [];
-        const correctOrder = ["#FF0000", "#0000FF", "#00FF00", "#FFFF00"];
         
         // Create candles and add to cake
         const cake = document.querySelector('.cake');
-        
-        // Randomize candle positions but still keep original order for checking
-        const shuffledPositions = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
         
         for (let i = 0; i < 4; i++) {
             const candle = document.createElement('div');
             candle.className = 'candle';
             
-            // Position candles evenly across the cake
-            const topPosition = -35; // Start higher up on the cake
+            // Position candles evenly across the cake, centered
+            const leftPosition = 50 + i * 30;
             
-            // Center candles on the cake
-            const position = shuffledPositions[i];
-            const leftPosition = 40 + position * 40;
-            
-            // Vary heights slightly
-            const height = 35 + Math.random() * 5;
-            
-            candle.style.top = `${topPosition}px`;
             candle.style.left = `${leftPosition}px`;
-            candle.style.height = `${height}px`;
             candle.style.backgroundColor = candleColors[i];
             candle.dataset.color = candleColors[i];
             
