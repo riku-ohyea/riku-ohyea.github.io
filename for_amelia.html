@@ -44,7 +44,6 @@
             background-color: #f5d6c6;
             border-radius: 10px 10px 0 0;
             margin: 100px auto 0;
-            position: relative;
         }
         
         .cake-base {
@@ -70,10 +69,9 @@
             position: absolute;
             width: 10px;
             height: 40px;
-            background-color: white;
             cursor: pointer;
-            z-index: 1; /* Lower z-index so candles appear behind cake */
-            bottom: 140px; /* Position relative to bottom for consistent alignment */
+            z-index: 1;
+            bottom: 140px;
         }
         
         .flame {
@@ -102,7 +100,6 @@
             opacity: 0;
             pointer-events: none;
             font-family: 'Creepster', cursive;
-            font-size: 36px;
             color: red;
             z-index: 5;
         }
@@ -120,12 +117,12 @@
         
         @media (max-width: 600px) {
             .cake {
-                width: 250px;
-                height: 160px;
+                width: 160px;
+                height: 120px;
             }
             
             .cake-base {
-                width: 290px;
+                width: 200px;
                 left: -20px;
             }
             
@@ -185,16 +182,33 @@
     </div>
     
     <script>
-        // Define candle colors - randomized but fixed colors
+        // Candle colors
         const candleColors = [
-            "#00FF00", // Green 
-            "#FF0000", // Red
-            "#FFFF00", // Yellow
-            "#0000FF"  // Blue
+            { color: "#FF0000", name: "red" },    // Red
+            { color: "#0000FF", name: "blue" },   // Blue
+            { color: "#00FF00", name: "green" },  // Green
+            { color: "#FFFF00", name: "yellow" }  // Yellow
         ];
         
-        // Define the correct order to click (red, blue, green, yellow)
-        const correctOrder = ["#FF0000", "#0000FF", "#00FF00", "#FFFF00"];
+        // Shuffle the candle colors for random order
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+        
+        // Shuffle the candles for display
+        const displayCandles = shuffleArray([...candleColors]);
+        
+        // Define the correct order to click
+        const correctOrder = [
+            "red",    // Red first
+            "blue",   // Blue second
+            "green",  // Green third
+            "yellow"  // Yellow fourth
+        ];
         
         // Track clicked candles and their order
         let clickedOrder = [];
@@ -207,11 +221,11 @@
             candle.className = 'candle';
             
             // Position candles evenly across the cake, centered
-            const leftPosition = 50 + i * 30;
+            const leftPosition = 60 + i * 25;
             
             candle.style.left = `${leftPosition}px`;
-            candle.style.backgroundColor = candleColors[i];
-            candle.dataset.color = candleColors[i];
+            candle.style.backgroundColor = displayCandles[i].color;
+            candle.dataset.colorName = displayCandles[i].name;
             
             const flame = document.createElement('div');
             flame.className = 'flame';
@@ -226,10 +240,10 @@
                 this.querySelector('.flame').remove();
                 
                 // Add to clicked order
-                const candleColor = this.dataset.color;
-                clickedOrder.push(candleColor);
+                const candleName = this.dataset.colorName;
+                clickedOrder.push(candleName);
                 
-                // Check if all candles are clicked in correct order
+                // Check if all candles are clicked
                 if (clickedOrder.length === 4) {
                     let correctSequence = true;
                     for (let j = 0; j < 4; j++) {
@@ -295,10 +309,10 @@
             msg.style.top = `${top}%`;
             msg.style.left = `${left}%`;
             msg.style.transform = `rotate(${rotation}deg)`;
-            msg.style.fontSize = `${Math.random() * 20 + 16}px`;
+            msg.style.fontSize = `${Math.random() * 20 + 18}px`;
         });
         
-        // Color flip and hidden messages
+        // Color flip and hidden messages every 20 seconds
         let colorFlipInterval = setInterval(function() {
             const hiddenMessages = document.querySelector('.hidden-messages');
             
@@ -312,7 +326,7 @@
             document.querySelector('.cake-top').style.backgroundColor = '#004721';
             document.querySelector('.cake-base').style.backgroundColor = '#26599f';
             
-            // Hide messages and restore colors after half a second
+            // Hide messages and restore colors after 0.75 seconds
             setTimeout(function() {
                 hiddenMessages.style.opacity = '0';
                 document.body.style.backgroundColor = 'black';
@@ -320,8 +334,8 @@
                 document.querySelector('.cake').style.backgroundColor = '#f5d6c6';
                 document.querySelector('.cake-top').style.backgroundColor = '#ffb8de';
                 document.querySelector('.cake-base').style.backgroundColor = '#d9a066';
-            }, 500); // 500 milliseconds (half a second)
-        }, 15000); // Every 15 seconds
+            }, 750); // 750 milliseconds (0.75 seconds)
+        }, 20000); // Every 20 seconds
     </script>
 </body>
 </html>
