@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Fynnigan!</title>
+    <style>
+        body {
+            font-family: 'Helvetica', Arial, sans-serif;
+            background: black;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .birthday-message {
+            font-size: 4em;
+            font-weight: normal;
+            text-align: center;
+            margin: 50px 0;
+            transition: opacity 1s ease;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: none;
+            max-width: 90vw;
+        }
+
+        @media (max-width: 768px) {
+            .birthday-message {
+                font-size: 2.5em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .birthday-message {
+                font-size: 2em;
+            }
+        }
+
+        .clickable-letter {
+            color: cyan;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .clickable-letter:hover {
+            opacity: 0.7;
+        }
+
+        .clicked {
+            transform: scale(1.2);
+        }
+
+        .quote-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            font-style: italic;
+            font-size: 2.5em;
+            opacity: 0;
+            transition: opacity 2s ease;
+            z-index: 100;
+            max-width: 90vw;
+            word-wrap: break-word;
+        }
+
+        @media (max-width: 768px) {
+            .quote-container {
+                font-size: 1.8em;
+            }
+        }
+
+        .quote-letters {
+            color: cyan;
+        }
+
+        .main-content {
+            opacity: 0;
+            transition: opacity 1s ease;
+            text-align: center;
+            max-width: 90vw;
+        }
+
+        .main-content.show {
+            opacity: 1;
+        }
+
+        .present-text {
+            font-size: 2.5em;
+            margin: 30px 0;
+            word-wrap: break-word;
+        }
+
+        @media (max-width: 768px) {
+            .present-text {
+                font-size: 1.8em;
+            }
+        }
+
+        .arrow {
+            font-size: 5em;
+            color: cyan;
+            margin: 30px 0;
+        }
+
+        .roulette-container {
+            background: #333;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .roulette-display {
+            background: #000;
+            border: 3px solid #fff;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px auto;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            transition: all 0.1s ease;
+            width: 300px;
+            box-sizing: border-box;
+        }
+
+        .roulette-display.spinning {
+            animation: colorChange 0.2s linear infinite;
+        }
+
+        @keyframes colorChange {
+            0% { color: #ff6b6b; background: #000; }
+            33% { color: #4ecdc4; background: #111; }
+            66% { color: #ffff00; background: #000; }
+            100% { color: #ff6b6b; background: #111; }
+        }
+
+        .stop-button {
+            background: #fff;
+            color: black;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Helvetica', Arial, sans-serif;
+        }
+
+        .stop-button:hover {
+            background: #ddd;
+        }
+
+        .stop-button:disabled {
+            background: #666;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        .floating-letter {
+            position: fixed;
+            z-index: 50;
+            font-size: 4em;
+            color: cyan;
+            transition: all 2s ease-in-out;
+            pointer-events: none;
+        }
+
+        .fade-letter {
+            transition: opacity 0.5s ease;
+        }
+
+        .fade-clickable {
+            transition: opacity 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="birthday-message" id="birthdayMessage">
+        HAPPY&nbsp;B<span class="clickable-letter" data-letter="U" id="letterU">U</span>RTHDAY&nbsp;<span class="clickable-letter" data-letter="F" id="letterF">F</span>YNN<span class="clickable-letter" data-letter="I" id="letterI">I</span>GAN!
+    </div>
+
+    <div class="quote-container" id="quoteContainer">
+        <div>
+            "<span class="quote-letters" id="quoteU">U</span> <span class="quote-letters" id="quoteF">F</span>***ing <span class="quote-letters" id="quoteI">I</span>diot!"
+        </div>
+        <div style="margin-top: 10px; font-size: 0.6em;">- Fynnigan 2025</div>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="present-text">
+            Happy&nbsp;happy&nbsp;birthday!<br>
+            Your&nbsp;present
+        </div>
+        
+        <div class="arrow">⬇</div>
+        
+        <div class="roulette-container">
+            <div class="roulette-display" id="rouletteDisplay">Click STOP to reveal your prize!</div>
+            <button class="stop-button" id="stopButton" onclick="stopRoulette()">STOP</button>
+        </div>
+    </div>
+
+    <script>
+        let clickSequence = [];
+        const correctSequence = ['U', 'F', 'I'];
+        const prizes = ['$40 of cash', '$40 of RP', '$40 of Steam Points'];
+        let rouletteInterval;
+        let isSpinning = false;
+        let currentPrizeIndex = 0;
+
+        // Add click listeners to letters
+        document.querySelectorAll('.clickable-letter').forEach(letter => {
+            letter.addEventListener('click', function() {
+                const letterValue = this.getAttribute('data-letter');
+                
+                // Add clicked class for visual feedback
+                this.classList.add('clicked');
+                
+                // Add to sequence
+                clickSequence.push(letterValue);
+                
+                // Check if sequence is correct so far
+                let isCorrectSoFar = true;
+                for (let i = 0; i < clickSequence.length; i++) {
+                    if (clickSequence[i] !== correctSequence[i]) {
+                        isCorrectSoFar = false;
+                        break;
+                    }
+                }
+                
+                if (!isCorrectSoFar) {
+                    // Reset sequence and visual feedback
+                    clickSequence = [];
+                    document.querySelectorAll('.clickable-letter').forEach(l => {
+                        l.classList.remove('clicked');
+                    });
+                    return;
+                }
+                
+                // If complete sequence is correct
+                if (clickSequence.length === correctSequence.length) {
+                    setTimeout(() => {
+                        animateToQuote();
+                    }, 500);
+                }
+            });
+        });
+
+        function animateToQuote() {
+            // Step 1: Fade away everything except UFI and move UFI to quote positions
+            const birthdayMsg = document.getElementById('birthdayMessage');
+            
+            // Get UFI letter positions first
+            const sourceU = document.getElementById('letterU');
+            const sourceF = document.getElementById('letterF');
+            const sourceI = document.getElementById('letterI');
+            
+            // Temporarily show quote container invisibly to get target positions
+            const quoteContainer = document.getElementById('quoteContainer');
+            quoteContainer.style.opacity = '0';
+            quoteContainer.style.visibility = 'visible';
+            
+            const quoteU = document.getElementById('quoteU');
+            const quoteF = document.getElementById('quoteF');
+            const quoteI = document.getElementById('quoteI');
+            
+            const letters = [
+                { source: sourceU, target: quoteU, letter: 'U' },
+                { source: sourceF, target: quoteF, letter: 'F' },
+                { source: sourceI, target: quoteI, letter: 'I' }
+            ];
+            
+            const floatingLetters = [];
+            
+            // Create floating letters
+            letters.forEach(({ source, target, letter }) => {
+                const sourceRect = source.getBoundingClientRect();
+                const targetRect = target.getBoundingClientRect();
+                
+                const floatingLetter = document.createElement('div');
+                floatingLetter.className = 'floating-letter';
+                floatingLetter.textContent = letter;
+                floatingLetter.style.left = sourceRect.left + 'px';
+                floatingLetter.style.top = sourceRect.top + 'px';
+                document.body.appendChild(floatingLetter);
+                floatingLetters.push(floatingLetter);
+                
+                // Move to quote position
+                setTimeout(() => {
+                    floatingLetter.style.left = targetRect.left + 'px';
+                    floatingLetter.style.top = targetRect.top + 'px';
+                }, 200);
+            });
+            
+            // Fade out the entire birthday message quickly
+            setTimeout(() => {
+                birthdayMsg.style.opacity = '0';
+            }, 200);
+            
+            // Step 2: After letters reach quote, fade out UFI quickly
+            setTimeout(() => {
+                floatingLetters.forEach(letter => {
+                    letter.style.transition = 'opacity 0.5s ease';
+                    letter.style.opacity = '0';
+                });
+                
+                // Clean up floating letters
+                setTimeout(() => {
+                    floatingLetters.forEach(letter => letter.remove());
+                }, 500);
+                
+            }, 2200);
+            
+            // Step 3: After UFI is gone, fade in quote slowly
+            setTimeout(() => {
+                quoteContainer.style.opacity = '1';
+                quoteContainer.style.visibility = 'visible';
+                
+                // Step 4: After 5 seconds, fade out quote and show main content
+                setTimeout(() => {
+                    quoteContainer.style.opacity = '0';
+                    setTimeout(() => {
+                        quoteContainer.style.display = 'none';
+                        document.getElementById('mainContent').classList.add('show');
+                        startRoulette();
+                    }, 1000);
+                }, 5000);
+                
+            }, 2700);
+        }
+
+        function startRoulette() {
+            isSpinning = true;
+            const rouletteDisplay = document.getElementById('rouletteDisplay');
+            rouletteDisplay.classList.add('spinning');
+            
+            rouletteInterval = setInterval(() => {
+                rouletteDisplay.textContent = prizes[currentPrizeIndex];
+                currentPrizeIndex = (currentPrizeIndex + 1) % prizes.length;
+            }, 200);
+        }
+
+        function stopRoulette() {
+            if (!isSpinning) return;
+            
+            isSpinning = false;
+            clearInterval(rouletteInterval);
+            
+            const rouletteDisplay = document.getElementById('rouletteDisplay');
+            rouletteDisplay.classList.remove('spinning');
+            
+            // Show the current prize in the cycle
+            const finalPrize = prizes[currentPrizeIndex];
+            rouletteDisplay.textContent = `🎉 ${finalPrize} 🎉`;
+            rouletteDisplay.style.color = 'cyan';
+            
+            // Disable button
+            document.getElementById('stopButton').disabled = true;
+            document.getElementById('stopButton').textContent = 'WINNER!';
+        }
+    </script>
+</body>
+</html>
