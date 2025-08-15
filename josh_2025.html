@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallahad's Puzzle</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .container {
+            text-align: left;
+            max-width: 600px;
+            padding: 20px;
+            margin: 0 auto;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .puzzle-section {
+            opacity: 1;
+            transition: all 1s ease;
+        }
+        
+        .puzzle-section.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .message-section {
+            opacity: 0;
+            transition: all 1.5s ease;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .message-section.show {
+            opacity: 1;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+        
+        .story {
+            font-size: 1rem;
+            line-height: 1.6;
+            font-weight: 300;
+            margin-bottom: 30px;
+        }
+        
+        .story p {
+            margin-bottom: 8px;
+        }
+        
+        .final-question {
+            font-size: 1.2rem;
+            margin: 30px 0;
+            text-align: center;
+            font-weight: 400;
+        }
+        
+        .hidden-letter {
+            cursor: pointer !important;
+            transition: all 0.3s ease;
+            padding: 2px 4px;
+            border-radius: 3px;
+            user-select: none;
+            color: inherit;
+            position: relative;
+            z-index: 10;
+            display: inline-block;
+        }
+        
+        .hidden-letter:hover {
+            background: #333;
+            color: #fff;
+        }
+        
+        .hidden-letter.clicked {
+            background: #555;
+            color: #fff;
+            transform: scale(0.95);
+        }
+        
+        .answer-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .answer-display {
+            font-size: 1.8rem;
+            margin: 20px 0;
+            min-height: 50px;
+            letter-spacing: 4px;
+            font-weight: 300;
+            padding: 20px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            background: #111;
+            display: inline-block;
+            min-width: 300px;
+        }
+        
+        .hint {
+            font-size: 0.9rem;
+            color: #999;
+            margin-top: 20px;
+            font-weight: 300;
+            text-align: center;
+            font-style: italic;
+        }
+        
+        .birthday-message {
+            text-align: center;
+        }
+        
+        .birthday-message h2 {
+            font-size: 2.2rem;
+            font-weight: 400;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+        
+        .birthday-message p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+        
+        .birthday-message .final-line {
+            font-size: 1.3rem;
+            margin-top: 40px;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="puzzle-section" id="puzzleSection">
+            <div class="story">
+                <p><span class="hidden-letter" data-letter="l" data-index="0">l</span>ate nights, Mark brought such positive vibes to every game.</p>
+                
+                <p><span class="hidden-letter" data-letter="G" data-index="2">G</span>reat plays and teamwork - that's what Fynn was all about.</p>
+                
+                <p><span class="hidden-letter" data-letter="a" data-index="3">a</span>nd Riku... well, he definitely wasn't ganking lanes much.</p>
+                
+                <p><span class="hidden-letter" data-letter="l" data-index="4">l</span>aughing together, no defeat could bring us down. League of</p>
+                
+                <p><span class="hidden-letter" data-letter="l" data-index="5">l</span>egends with this crew was always a promised awesome time.</p>
+                
+                <p><span class="hidden-letter" data-letter="a" data-index="6">a</span>ll of us had our strengths and weaknesses as players.</p>
+                
+                <p><span class="hidden-letter" data-letter="h" data-index="7">h</span>onest teamwork made us click both in game and at work. The</p>
+                
+                <p><span class="hidden-letter" data-letter="a" data-index="8">a</span>mazing synergy wasn't only contained in the virtual world.</p>
+                
+                <p><span class="hidden-letter" data-letter="d" data-index="9">d</span>ifferent roles, same goal - the undefeatable quartet. But</p>
+                
+                <p><span class="hidden-letter" data-letter="l" data-index="11">l</span>ooking back, the best shotcaller in game AND at work was...</p>
+            </div>
+            
+            <div class="answer-section">
+                <div class="answer-display" id="answerDisplay"></div>
+            </div>
+        </div>
+        
+        <div class="message-section" id="messageSection">
+            <div class="birthday-message">
+                <h2>l Gallahad l, the greatest league player</h2>
+                <p><em>should play league again with the EM league gang,</em></p>
+                <p><em>Aaaaand receive $30 worth of RP from Riku when he does.</em></p>
+                <p class="final-line">Happy birthday Josh! I miss working with you.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const targetAnswer = "l Gallahad l";
+        let currentAnswer = "";
+        let clickedLetters = new Array(12).fill(false);
+        
+        // Map indices to the actual letters including spaces
+        const letterMap = {
+            0: "l",
+            1: " ",  // space after l
+            2: "G",
+            3: "a", 
+            4: "l",
+            5: "l",
+            6: "a",
+            7: "h", 
+            8: "a",
+            9: "d",
+            10: " ", // space before final l
+            11: "l"
+        };
+        const hiddenLetters = document.querySelectorAll('.hidden-letter');
+        const answerDisplay = document.getElementById('answerDisplay');
+        const puzzleSection = document.getElementById('puzzleSection');
+        const messageSection = document.getElementById('messageSection');
+        
+        console.log('Found letters:', hiddenLetters.length); // Debug log
+        hiddenLetters.forEach((letter, i) => {
+            console.log(`Letter ${i}:`, letter.dataset.letter, 'index:', letter.dataset.index);
+        });
+        
+        hiddenLetters.forEach(letter => {
+            letter.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const letterValue = this.dataset.letter;
+                const index = parseInt(this.dataset.index);
+                
+                console.log('Clicked letter:', letterValue, 'at index:', index); // Debug log
+                
+                // Visual feedback
+                this.classList.add('clicked');
+                setTimeout(() => {
+                    this.classList.remove('clicked');
+                }, 200);
+                
+                // Mark this letter as clicked
+                if (!clickedLetters[index]) {
+                    clickedLetters[index] = true;
+                    updateAnswer();
+                }
+            });
+        });
+        
+        function updateAnswer() {
+            // Build the answer with spaces automatically included
+            currentAnswer = "";
+            let displayAnswer = "";
+            
+            for (let i = 0; i < 12; i++) {
+                if (letterMap[i]) {
+                    if (letterMap[i] === " ") {
+                        // Always show spaces
+                        currentAnswer += " ";
+                        displayAnswer += " ";
+                    } else {
+                        // Show letter if clicked, underscore if not
+                        if (clickedLetters[i]) {
+                            const letter = letterMap[i];
+                            currentAnswer += letter;
+                            displayAnswer += letter;
+                        } else {
+                            currentAnswer += "_";
+                            displayAnswer += "_";
+                        }
+                    }
+                }
+            }
+            
+            answerDisplay.textContent = displayAnswer;
+            
+            // Check if puzzle is solved (all non-space letters clicked)
+            const allLettersClicked = [0,2,3,4,5,6,7,8,9,11].every(i => clickedLetters[i]);
+            if (allLettersClicked) {
+                setTimeout(() => {
+                    puzzleSection.classList.add('hidden');
+                    setTimeout(() => {
+                        messageSection.classList.add('show');
+                    }, 500);
+                }, 1000);
+            }
+        }
+        
+        // Reset function (double-click anywhere)
+        document.addEventListener('dblclick', () => {
+            clickedLetters = new Array(12).fill(false);
+            currentAnswer = "";
+            answerDisplay.textContent = "";
+            updateAnswer();
+        });
+        
+        // Initialize display
+        updateAnswer();
+    </script>
+</body>
+</html>
